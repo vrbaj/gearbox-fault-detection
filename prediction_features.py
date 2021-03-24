@@ -22,7 +22,7 @@ for item in gearbox_load:
     ser = 0
     for series in data_series:
         dataset_len = series.shape[0]
-        print("dataset: ",item, " lenght>", dataset_len)
+        print("dataset: ", item, " length>", dataset_len)
         d = np.zeros(dataset_len - filter_len)
         x = np.zeros((dataset_len - filter_len, filter_len))
         series = padasip.standardize(series[:, 0])
@@ -49,7 +49,7 @@ plt.plot(results["healthy error mean"], "k+")
 plt.plot(results["faulty error mean"], "r+")
 
 plt.figure(1)
-plt.title("stdev|e|")
+plt.title("std|e|")
 plt.plot(results["healthy error std"], "k+")
 plt.plot(results["faulty error std"], "r+")
 plt.show()
