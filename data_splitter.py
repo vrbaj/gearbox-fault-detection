@@ -7,7 +7,6 @@ It splits the files into shorter segments and store them in flat directory
 import os, glob
 
 import numpy as np
-from matplotlib import pyplot as plt
 
 
 SEGMENT_SIZE = 1000
@@ -29,7 +28,7 @@ for target_path in all_paths:
         data = datapack[n-SEGMENT_SIZE:n]
 
         filename = "{}-{}-{}.csv".format(
-            "B" if "Broken" in b_diagnose else "H",
+            "broken" if "Broken" in b_diagnose else "healthy",
             b_load,
             n // SEGMENT_SIZE
         )
