@@ -16,6 +16,7 @@ from matplotlib import pyplot as plt
 import pandas as pd
 import padasip as pa
 import emd
+import scipy
 
 
 def measure_time(func):
@@ -37,6 +38,14 @@ def process_dummy(data):
     return np.random.random()
 
 @measure_time
+def process_plain(data):
+    out = []
+    for column in range(0,4):
+        out.append(data[:,column].std())
+        # out.append(scipy.stats.kurtosis(data[:,column]))
+    return out
+
+@measure_time
 def process_padasip_e(data, n, mu):
     out = []
     for column in range(0,4):
@@ -45,7 +54,8 @@ def process_padasip_e(data, n, mu):
         d = u[n:]
         f = pa.filters.FilterNLMS(n=n, mu=mu, w="zeros")
         y, e, w = f.run(d, x)
-        out.append(abs(e).mean())
+        out.append(e.std())
+        # out.append(scipy.stats.kurtosis(e))
     return out
 
 
@@ -57,8 +67,9 @@ def process_emd(data):
         imf = emd.sift.sift(u)
         # IP, IF, IA = emd.spectra.frequency_transform(imf, 100, 'hilbert')
         # means = IA.mean(axis=0) # TODO: co skutecne je to IA?
-        means = abs(imf).mean(axis=0)
-        out.append(means[0])
+        mean = imf[:,0].std(axis=0)
+        out.append(mean)
+        # out.append(scipy.stats.kurtosis(imf[:,0]))
     return out
 
 
@@ -91,6 +102,7 @@ for file_name in real_file_names[:]:
 
     af_result = process_padasip_e(data, 10, 0.5, label="AF")
     emd_result = process_emd(data, label="EMD")
+    plain_result = process_plain(data, label="PLAIN")
 
     results_data = results_data.append({
         "class": out_class,
@@ -104,6 +116,10 @@ for file_name in real_file_names[:]:
         "result_EMD_2": emd_result[1],
         "result_EMD_3": emd_result[2],
         "result_EMD_4": emd_result[3],
+        "result_PLAIN_1": plain_result[0],
+        "result_PLAIN_2": plain_result[1],
+        "result_PLAIN_3": plain_result[2],
+        "result_PLAIN_4": plain_result[3],
     }, ignore_index=True)
 
 
